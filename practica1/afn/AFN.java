@@ -72,10 +72,15 @@ public class AFN{
     System.out.printf("}\n");
   }
 
+  public void printInit(){
+    System.out.printf("I={ %d }\n",edoInit.getId());
+  }
+
   public void printAFN(){
     enumAFN();
     printLang();
     printEdosAFN();
+    printInit();
     printEdosAceptacion();
     printTransiciones();
   }
