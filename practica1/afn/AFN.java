@@ -105,7 +105,7 @@ public class AFN{
     printTransiciones();
   }
 
-  /* Constructor con parametro que crea automata basico */
+  /* Funcion con parametro que crea automata basico */
   public AFN afnBasico(Character s){
     return new AFN(s);
   }
