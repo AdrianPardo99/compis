@@ -5,7 +5,7 @@ import afn.AFN;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 08-02-2020 */
+ * Last file update: 10-02-2020 */
 
 public class main{
   public static void main(String[] args) {
@@ -21,6 +21,7 @@ public class main{
     f2=new AFN('p');
     f2.printAFN();
     System.out.printf("\nnew AFN 2\n");
-    f2.unirAFN(f1);f2.printAFN();
+    f2.kleene();
+    f2.printAFN();
   }
 }

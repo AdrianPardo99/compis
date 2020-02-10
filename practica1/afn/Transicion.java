@@ -5,7 +5,7 @@ package afn;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 08-02-2020 */
+ * Last file update: 10-02-2020 */
 
 public class Transicion{
   /* Clase Transicion */
@@ -33,6 +33,13 @@ public class Transicion{
   /* Constructor con parametros del simbolo de lectura y el
    * Estado destino */
   public Transicion(Estado estadoSig,Character simbolo){
+    this.estadoSig=estadoSig;
+    this.simbolo=simbolo;
+  }
+
+  /* Constructor con parametros del simbolo de lectura y el
+   * Estado destino inverso */
+  public Transicion(Character simbolo,Estado estadoSig){
     this.estadoSig=estadoSig;
     this.simbolo=simbolo;
   }

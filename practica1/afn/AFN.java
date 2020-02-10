@@ -8,7 +8,7 @@ import java.util.HashSet;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 08-02-2020 */
+ * Last file update: 10-02-2020 */
 
 public class AFN{
   /* Clase AFN (Automata Finito No Determinista) */
@@ -153,4 +153,51 @@ public class AFN{
     f2=null;
     return this;
   }
+
+  public AFN cerraduraOpcional(){
+    Estado e1=new Estado(),
+      e2=new Estado();
+    e1.getTransiciones().add(new Transicion(this.edoInit,epsilon));
+    e1.getTransiciones().add(new Transicion(e2,epsilon));
+    e2.setAceptacion(true);
+    for(Estado e:this.edosAceptacion){
+      e.getTransiciones().add(new Transicion(epsilon,e2));
+      e.setAceptacion(false);
+    }
+    this.edosAFN.add(e1);
+    this.edosAFN.add(e2);
+    this.edosAceptacion.clear();
+    this.edosAceptacion.add(e2);
+    this.edoInit=e1;
+    return this;
+  }
+
+  /* Funcion que genera la cerradura positiva de un AFN {f}^(+) */
+  public AFN plus(){
+    Estado e1=new Estado(),
+      e2=new Estado();
+    e1.getTransiciones().add(new Transicion(epsilon,this.edoInit));
+    e2.setAceptacion(true);
+    for(Estado e:this.edosAceptacion){
+      e.getTransiciones().add(new Transicion(e2,epsilon));
+      e.getTransiciones().add(new Transicion(epsilon,this.edoInit));
+      e.setAceptacion(false);
+    }
+    this.edosAFN.add(e1);
+    this.edosAFN.add(e2);
+    this.edosAceptacion.clear();
+    this.edosAceptacion.add(e2);
+    this.edoInit=e1;
+    return this;
+  }
+
+  /* Funcion que genera la cerradura de Kleene de un AFN {f}^(*) */
+  public AFN kleene(){
+    AFN f1=this.plus();
+    for(Estado e:this.edosAceptacion){
+      f1.edoInit.getTransiciones().add(new Transicion(e,epsilon));
+    }
+    return f1;
+  }
+
 }
