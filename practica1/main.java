@@ -1,4 +1,7 @@
 import afn.AFN;
+import regex.regex;
+import java.util.ArrayList;
+import utils.color;
 
 /*Developed by:
  * Valdez Esquivel Melani Betsabee
@@ -9,19 +12,52 @@ import afn.AFN;
 
 public class main{
   public static void main(String[] args) {
-    AFN f1=new AFN('s'),f2=new AFN('n');
-    System.out.printf("\nAFN 1\n");
-    f1.printAFN();
-    System.out.printf("\nAFN 2\n");
-    f2.printAFN();
-    System.out.printf("\nAFN 1  AFN 2\n");
-    f1.concatenarAFN(f2);
-    f1.printAFN();
-    System.out.printf("\nAFN 2\n");
-    f2=new AFN('p');
-    f2.printAFN();
-    System.out.printf("\nnew AFN 2\n");
-    f2.kleene();
-    f2.printAFN();
+    if(args.length==0){
+      System.out.printf("%sPor favor ingresa el "+
+      "programa y como argumentos algunas regex%s\n",color.BRED,color.KNRM);
+    }
+    boolean or=false,ban=false;
+    ArrayList<AFN> arrF=new ArrayList<AFN>();
+    regex Reg=new regex();
+    for(String s:args){
+      Reg.stringToArray(s);
+      if(Reg.getArrChar()==null)
+        continue;
+      for(Character c:Reg.getArrChar()){
+        if(c=='(' || c==')'){
+          continue;
+        }else{
+          if(c=='|'){
+            if(!or){
+              arrF.add(new AFN());
+              or=true;
+            }
+            continue;
+          }else if(c=='*'){
+            arrF.set( arrF.size()-1, arrF.get(arrF.size()-1).kleene());
+          }else if(c=='+'){
+            arrF.set(arrF.size()-1, arrF.get(arrF.size()-1).plus());
+          }else if(or){
+            arrF.remove(arrF.size()-1);
+            arrF.add(new AFN(c));
+            arrF.get(arrF.size()-2).unirAFN(arrF.get(arrF.size()-1));
+            arrF.remove(arrF.size()-1);
+            or=false;
+          }else{
+            if(ban){
+              arrF.set(arrF.size()-1,arrF.get(arrF.size()-1).concatenarAFN(new AFN(c)));
+            }else{
+              arrF.add(new AFN(c));
+              ban=true;
+            }
+          }
+        }
+      }
+      ban=false;
+      or=false;
+    }
+    for(AFN f:arrF){
+      f.printAFN();
+    }
   }
 }
