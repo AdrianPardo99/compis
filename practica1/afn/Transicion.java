@@ -5,7 +5,7 @@ package afn;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 10-02-2020 */
+ * Last file update: 16-02-2020 */
 
 public class Transicion{
   /* Clase Transicion */
@@ -64,5 +64,10 @@ public class Transicion{
   /* Funcion que imprime los datos de la clase */
   public void printTransicion(){
     System.out.printf("(%s -> %d)",simbolo.toString(),estadoSig.getId());
+  }
+
+  /*Funcion que retorna lo que imprime pero sin imprimir*/
+  public String getStringTransicion(){
+    return ""+simbolo.toString()+","+estadoSig.getId();
   }
 }

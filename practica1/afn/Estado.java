@@ -1,13 +1,14 @@
 package afn;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.ArrayList;
 
 /* Developed by:
  * Valdez Esquivel Melani Betsabee
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 08-02-2020 */
+ * Last file update: 16-02-2020 */
 
 public class Estado{
   /* Clase Estado */
@@ -76,6 +77,14 @@ public class Estado{
       t.printTransicion();
       System.out.printf("\n");
     }
+  }
+
+  public Object[] getEstadoTransicion(){
+    ArrayList<String> f=new ArrayList<>();
+    for(Transicion t:transiciones){
+      f.add(this.getId()+","+t.getStringTransicion());
+    }
+    return f.toArray();
   }
 
 }

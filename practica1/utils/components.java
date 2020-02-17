@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import afn.AFN;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextArea;
+
 /*Developed by:
  * Valdez Esquivel Melani Betsabee
  * Gonzalez Pardo Adrian
@@ -21,9 +26,13 @@ public class components{
   protected ArrayList<JLabel> arrLbl;
   protected ArrayList<JTextField> arrTxt;
   protected ArrayList<AFN> arrAFN;
-  protected JComboBox cmb;
+  protected JComboBox cmb,cmbCerradura;
   protected JPanel pan;
+  protected JTextArea area;
   protected int i;
+  protected JTable tableAF;
+  protected JScrollPane sc,sc1;
+  protected DefaultTableModel model;
   protected String namesCMB[]={"Crea AFN","Unir AFN's",
     "Concatenar AFN's","Cerraduras AFN","AFN to AFD",
     "Ver Transiciones \ndel Automata"},
@@ -31,5 +40,10 @@ public class components{
     lbl2[]={"Union AFN","Ingresa el indice del primer AFN",
       "Ingresa el indice del segundo AFN","AFN Disponibles",""},
     lbl3[]={"Concatenacion AFN","Ingresa el indice del primer AFN",
-      "Ingresa el indice del segundo AFN","AFN Disponibles",""};
+      "Ingresa el indice del segundo AFN","AFN Disponibles",""},
+    cmbCerr[]={"Positiva","Kleene","Interrogativa"},
+    lbl4[]={"Cerraduras","Ingresa el indice del AFN","Cerradura","AFN Disponibles",""},
+    lbl5[]={"Muestra datos del AF","Indice del AF","AF Disponibles",""},
+    tableColumn[]={"Inicial","Simbolo","A"};
+
 }

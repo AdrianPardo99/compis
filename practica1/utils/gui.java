@@ -14,6 +14,10 @@ import javax.swing.JOptionPane;
 import afn.AFN;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextArea;
 
 
 /*Developed by:
@@ -53,12 +57,18 @@ public class gui extends components{
     arrAFN=new ArrayList<>();
     pan=new JPanel();
     cmb=new JComboBox();
+    cmbCerradura=new JComboBox();
     arrBtn.add(new JButton("Abrir pestaña"));
     arrBtn.add(new JButton("Crea AFN"));
     arrBtn.add(new JButton("Une AFN"));
     arrBtn.add(new JButton("Concatena AFN"));
-    for (String name:namesCMB){
+    arrBtn.add(new JButton("Cerradura"));
+    arrBtn.add(new JButton("Visualizar"));
+    for(String name:namesCMB){
       cmb.addItem(name);
+    }
+    for(String type : cmbCerr){
+      cmbCerradura.addItem(type);
     }
     for(i=0;i<4;i++){
       arrLbl.add(new JLabel(lbl1[i]));
@@ -69,9 +79,24 @@ public class gui extends components{
     for(i=0;i<lbl3.length;i++){
       arrLbl.add(new JLabel(lbl3[i]));
     }
-    for(i=0;i<5;i++){
+    for(i=0;i<lbl4.length;i++){
+      arrLbl.add(new JLabel(lbl4[i]));
+    }
+    for(i=0;i<lbl5.length;i++){
+      arrLbl.add(new JLabel(lbl5[i]));
+    }
+    for(i=0;i<7;i++){
       arrTxt.add(new JTextField());
     }
+    model=new DefaultTableModel();
+    tableAF=new JTable(model);
+    sc=new JScrollPane(tableAF);
+    for(String s:tableColumn){
+      model.addColumn(s);
+    }
+
+    area=new JTextArea();
+    sc1=new JScrollPane(area);
     setBoundingComponents();
   }
 
@@ -107,10 +132,32 @@ public class gui extends components{
     arrTxt.get(3).setBounds(260,110,100,30);
     arrTxt.get(4).setBounds(260,140,100,30);
     arrBtn.get(3).setBounds((x/2)-100,210,160,30);
+
+    arrLbl.get(14).setBounds((x/2)-70,70,200,30);
+    for(i=15;i<17;i++){
+      arrLbl.get(i).setBounds(10,110+(i-15)*(30),240,30);
+    }
+    arrLbl.get(17).setBounds(10,170,130,30);
+    arrLbl.get(18).setBounds(160,170,200,30);
+    arrTxt.get(5).setBounds(260,110,100,30);
+    cmbCerradura.setBounds(260,140,100,30);
+    arrBtn.get(4).setBounds((x/2)-100,210,160,30);
+
+
+    arrLbl.get(19).setBounds((x/2)-70,70,200,30);
+    arrLbl.get(20).setBounds(10,110,240,30);
+    arrLbl.get(21).setBounds(10,140,240,30);
+    arrLbl.get(22).setBounds(160,140,240,30);
+    arrBtn.get(5).setBounds((x/2)-70,180,160,30);
+    arrTxt.get(6).setBounds(160,110,100,30);
+    sc.setBounds(10,220,x-30,100);
+    sc1.setBounds(10,340,x-30,100);
     settingComponents();
   }
 
   private void settingComponents(){
+    area.setEnabled(false);
+    tableAF.setEnabled(false);
     arrBtn.get(0).addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         for (AFN a : arrAFN) {
@@ -171,6 +218,58 @@ public class gui extends components{
             arrBtn.get(3).setEnabled(true);
           }
           pan.repaint();
+        }else if(cmb.getSelectedIndex()==3){
+          pan.removeAll();
+          pan.validate();
+          pan.repaint();
+          pan.add(cmb);
+          pan.add(arrBtn.get(0));
+          for(i=14;i<19;i++){
+            pan.add(arrLbl.get(i));
+          }
+          arrLbl.get(18).setText(""+arrAFN.size());
+          pan.add(arrTxt.get(5));
+          pan.add(cmbCerradura);
+          pan.add(arrBtn.get(4));
+          if(arrAFN.size()<1){
+            JOptionPane.showMessageDialog(null,"Debe existir al menos 1 AFN"
+            +"\npara trabajar esta sección","Error",JOptionPane.ERROR_MESSAGE);
+            arrBtn.get(4).setEnabled(false);
+          }else{
+            arrBtn.get(4).setEnabled(true);
+          }
+          pan.repaint();
+        }else if(cmb.getSelectedIndex()==4){
+          pan.removeAll();
+          pan.validate();
+          pan.repaint();
+          pan.add(cmb);
+          pan.add(arrBtn.get(0));
+          /*Modulo de afn to afd*/
+        }else if(cmb.getSelectedIndex()==5){
+          /*Aqui va la tablita de transiciones*/
+          model.setRowCount(0);
+          area.setText("");
+          pan.removeAll();
+          pan.validate();
+          pan.repaint();
+          pan.add(cmb);
+          pan.add(arrBtn.get(0));
+          for(i=19;i<23;i++){
+            pan.add(arrLbl.get(i));
+          }
+          arrLbl.get(22).setText(""+arrAFN.size());
+          pan.add(arrBtn.get(5));
+          pan.add(arrTxt.get(6));
+          if(arrAFN.size()<1){
+            JOptionPane.showMessageDialog(null,"Debe existir al menos 1 AFN"
+            +"\npara trabajar esta sección","Error",JOptionPane.ERROR_MESSAGE);
+            arrBtn.get(5).setEnabled(false);
+          }else{
+            arrBtn.get(5).setEnabled(true);
+          }
+          pan.add(sc);
+          pan.add(sc1);
         }else{
           pan.removeAll();
           pan.validate();
@@ -180,6 +279,7 @@ public class gui extends components{
         }
       }
     });
+
     arrBtn.get(1).addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
@@ -284,6 +384,70 @@ public class gui extends components{
         }
       }
     });
+    arrBtn.get(4).addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e){
+        if(arrTxt.get(5).getText().isEmpty()){
+          JOptionPane.showMessageDialog(null,"Debe escribir el "+
+            "indice del AFN\npara trabajar esta sección",
+            "Error",JOptionPane.ERROR_MESSAGE);
+        }else{
+          int a=Integer.parseInt(arrTxt.get(5).getText());
+          if(a>arrAFN.size()-1){
+            JOptionPane.showMessageDialog(null,"Debe escribir el "+
+            "indice\npara trabajar esta sección\n"+
+            "Este indices si es correcto sobreescribira el AFN",
+            "Error",JOptionPane.ERROR_MESSAGE);
+          }else{
+            String op[]={"Cerradura positiva","Cerradura de kleene",
+              "Cerradura opcional"};
+            switch(cmbCerradura.getSelectedIndex()){
+              case 0:
+                arrAFN.get(a).plus();
+              break;
+              case 1:
+                arrAFN.get(a).kleene();
+              break;
+              case 2:
+                arrAFN.get(a).cerraduraOpcional();
+              break;
+            }
+            JOptionPane.showMessageDialog(null,"El AFN "+a+" es modificado a\n"
+              +op[cmbCerradura.getSelectedIndex()],
+              "Atencion",JOptionPane.INFORMATION_MESSAGE);
+          }
+        }
+      }
+    });
+    arrBtn.get(5).addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e){
+        area.setText("");
+        model.setRowCount(0);
+        if(arrTxt.get(6).getText().isEmpty()){
+          JOptionPane.showMessageDialog(null,"Debe escribir el "+
+            "indice del AFN\npara trabajar esta sección",
+            "Error",JOptionPane.ERROR_MESSAGE);
+        }else{
+          int a=Integer.parseInt(arrTxt.get(6).getText());
+          if(a>arrAFN.size()-1){
+            JOptionPane.showMessageDialog(null,"Debe escribir el "+
+              "indice\npara trabajar esta sección\n","Error",
+              JOptionPane.ERROR_MESSAGE);
+          }else{
+            String aux="",arr[];
+            for(Object o:arrAFN.get(a).getAllTransiciones()){
+              aux=o.toString();
+              arr=aux.split(",");
+              Object ar[]={arr[0],arr[1],arr[2]};
+              model.addRow(ar);
+            }
+          }
+          area.setText(arrAFN.get(a).Tupla());
+
+        }
+      }
+    });
     arrTxt.get(0).addKeyListener(new  KeyListener(){
       @Override
       public void keyPressed(KeyEvent e){}
@@ -296,7 +460,8 @@ public class gui extends components{
         }
       }
     });
-    for(i=1;i<5;i++){
+
+    for(i=1;i<7;i++){
       arrTxt.get(i).addKeyListener(new KeyListener(){
         @Override
         public void keyPressed(KeyEvent e){}

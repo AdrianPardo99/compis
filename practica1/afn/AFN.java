@@ -2,13 +2,14 @@ package afn;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.ArrayList;
 
 /* Developed by:
  * Valdez Esquivel Melani Betsabee
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 10-02-2020 */
+ * Last file update: 16-02-2020 */
 
 public class AFN{
   /* Clase AFN (Automata Finito No Determinista) */
@@ -200,4 +201,35 @@ public class AFN{
     return f1;
   }
 
+  /* Funcion que devuelve las transiciones del AF */
+  public Object[] getAllTransiciones(){
+    ArrayList<String> f=new ArrayList<>();
+    String aux="";
+    for(Estado e:this.edosAFN){
+      Object[] ob=e.getEstadoTransicion();
+      for(Object o:ob){
+        aux=o.toString();
+        f.add(aux);
+      }
+    }
+    return f.toArray();
+  }
+
+  /* Funcion que devuelve la tupla del AF */
+  public String Tupla(){
+    String tup="Σ(";
+    for (Character a : alfabeto) {
+      tup+=" "+a.toString()+" ";
+    }
+    tup+=")\nS{";
+    for(Estado edo:edosAFN){
+      tup+=" "+edo.getId()+" ";
+    }
+    tup+="}\nI={ "+edoInit.getId()+" }\nF{";
+    for(Estado edo:edosAceptacion){
+      tup+=" "+edo.getId()+" ";
+    }
+    tup+="}";
+    return tup;
+  }
 }
