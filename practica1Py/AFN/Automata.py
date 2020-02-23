@@ -13,7 +13,6 @@ class Automata(object):
             ef.setAceptacion(True)
             ef.setName("f")
             transicion = Transiciones.Transicion(ef, simbolo)
-            print("Transicion generada:", transicion)
             self._edoInit.getTransiciones().append(transicion)
             self._edosAFN = list()
             self._edosAFN.append(self._edoInit)
@@ -29,9 +28,7 @@ class Automata(object):
     def enumAFN(self):
         c = 0
         for i in self._edosAFN:
-            #print("Nombre anterior: "+i.getName())
             i.setName(str(c))
-            #print("Nombre nuevo: "+i.getName())
             c += 1
         return self._edosAFN
 
@@ -57,19 +54,15 @@ class Automata(object):
         epsilon = "ε"
         e1 = Estados.Estados()
         e2 = Estados.Estados()
-        # transicion = "("+epsilon+","+self._edoInit.getName()+")"
         transicion = Transiciones.Transicion(self._edoInit, epsilon)
         e1.getTransiciones().append(transicion)
-        # transicion = "("+epsilon+","+aut._edoInit.getName()+")"
         transicion = Transiciones.Transicion(aut._edoInit, epsilon)
         e1.getTransiciones().append(transicion)
         for i in self._edosAceptacion:
-            # transicion = "("+epsilon+","+e2.getName()+")"
             transicion = Transiciones.Transicion(e2, epsilon)
             i.getTransiciones().append(transicion)
             i.setAceptacion(False)
         for i in aut._edosAceptacion:
-            # transicion = "("+epsilon+","+e2.getName()+")"
             transicion = Transiciones.Transicion(e2, epsilon)
             i.getTransiciones().append(transicion)
             i.setAceptacion(False)
@@ -142,14 +135,40 @@ class Automata(object):
         return aut
 
 
-aut = Automata("A")
-aut2 = Automata("B")
-print(aut.printTupla())
-print(aut2.printTupla())
-aut = aut.concatenarAFN(aut2)
-print(aut.printTupla())
-aut3 = Automata("C")
-aut = aut.concatenarAFN(aut3)
-print(aut.printTupla())
-aut = aut.cerraduraKl()
-print(aut.printTupla())
+
+    def moverA(self,estados,simbolo):
+        resultante=list()
+        for _ in range(len(estados)):
+            estado=estados.pop()
+            resultante |= list(estado.getTransiciones())
+        return resultante
+
+    def cerraduraEpsilon(self,estados):
+        epsilon = "ε"
+        resultado=set()
+        estadoAux=list()
+        for i in self._edosAFN:
+            if(i.getName()==estados.getName()):
+                estadoAux=i.getTransiciones()
+                break
+        if(len(estadoAux)>0):
+            for i in estadoAux:
+                if(epsilon in i.stringTransicion()):
+                    resultado.add(estados.getName())
+                    strign=i.stringTransicion().replace("(","").replace(")","").replace(epsilon,"").replace("->","")
+                    resultado.add(strign)
+        resultado=sorted(resultado)
+        return resultado
+
+
+    def AFNtoAFD(self):
+        s=list()
+        s.append(self.cerraduraEpsilon(self._edoInit))
+        print(self.printTupla())
+        for i in self._edosAFN:
+                for j in s:
+                    for k in j:
+                        if(k==i.getName()):
+                            if self.cerraduraEpsilon(i) not in s and k!=self._edoInit.getName():
+                                s.append(self.cerraduraEpsilon(i))
+        print(str(s))
