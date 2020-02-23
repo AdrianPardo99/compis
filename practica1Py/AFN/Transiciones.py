@@ -1,4 +1,4 @@
-from Estados import *
+import Estados
 
 class Transicion:
     def __init__(self, estadoSig=None,simbolo=None):

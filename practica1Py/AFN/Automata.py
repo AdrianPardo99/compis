@@ -1,18 +1,18 @@
-from Estados import *
-from Transiciones import *
+import Estados
+import Transiciones
 
 class Automata(object):
 
     def __init__(self, simbolo=None):
         if simbolo is not None:
-            self._edoInit = Estados()
+            self._edoInit = Estados.Estados()
             self._alfabeto = set(simbolo)
             self._edoInit.setName("0")
-            ef = Estados()
+            ef = Estados.Estados()
             ef.setAceptacion(True)
             ef.setName("f")
             #transicion = "( "+simbolo+","+ef.getName()+" )"
-            transicion= Transicion(ef,simbolo)
+            transicion= Transiciones.Transicion(ef,simbolo)
             print("Transicion generada:",transicion)
             self._edoInit.getTransiciones().append(transicion)
             self._edosAFN = list()
@@ -55,22 +55,22 @@ class Automata(object):
 
     def unirAFN(self, aut):
         epsilon = "ε"
-        e1 = Estados()
-        e2 = Estados()
+        e1 = Estados.Estados()
+        e2 = Estados.Estados()
         #transicion = "("+epsilon+","+self._edoInit.getName()+")"
-        transicion=Transicion(self._edoInit,epsilon)
+        transicion=Transiciones.Transicion(self._edoInit,epsilon)
         e1.getTransiciones().append(transicion)
         #transicion = "("+epsilon+","+aut._edoInit.getName()+")"
-        transicion=Transicion(aut._edoInit,epsilon)
+        transicion=Transiciones.Transicion(aut._edoInit,epsilon)
         e1.getTransiciones().append(transicion)
         for i in self._edosAceptacion:
             #transicion = "("+epsilon+","+e2.getName()+")"
-            transicion=Transicion(e2,epsilon)
+            transicion=Transiciones.Transicion(e2,epsilon)
             i.getTransiciones().append(transicion)
             i.setAceptacion(False)
         for i in aut._edosAceptacion:
             #transicion = "("+epsilon+","+e2.getName()+")"
-            transicion=Transicion(e2,epsilon)
+            transicion=Transiciones.Transicion(e2,epsilon)
             i.getTransiciones().append(transicion)
             i.setAceptacion(False)
         e2.setAceptacion(True)
@@ -83,6 +83,10 @@ class Automata(object):
         self._edoInit = e1
         self.enumAFN()
         return self
+    
+    def concatenarAFN(self, aut):
+        for i in self._edosAceptacion:
+            i.getTransiciones().extend(aut._edoInit.getTransiciones())
 
 
 aut = Automata("A")
