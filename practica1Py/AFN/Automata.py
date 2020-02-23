@@ -155,8 +155,15 @@ class Automata(object):
             for i in estadoAux:
                 if(epsilon in i.stringTransicion()):
                     resultado.add(estados.getName())
-                    strign=i.stringTransicion().replace("(","").replace(")","").replace(epsilon,"").replace("->","")
-                    resultado.add(strign)
+                    string=i.stringTransicion().replace("(","").replace(")","").replace(epsilon,"").replace("->","")
+                    resultado.add(string)
+                    if(i.getEstadoSig() not in resultado and estados.getName()!=i.getEstadoSig()):
+                        resultado2=self.cerraduraEpsilon(i.getEstadoSig())
+                        if(len(resultado2)>0):
+                            for j in resultado2:
+                                resultado.add(j)
+
+
         resultado=sorted(resultado)
         return resultado
 
@@ -164,11 +171,4 @@ class Automata(object):
     def AFNtoAFD(self):
         s=list()
         s.append(self.cerraduraEpsilon(self._edoInit))
-        print(self.printTupla())
-        for i in self._edosAFN:
-                for j in s:
-                    for k in j:
-                        if(k==i.getName()):
-                            if self.cerraduraEpsilon(i) not in s and k!=self._edoInit.getName():
-                                s.append(self.cerraduraEpsilon(i))
-        print(str(s))
+        print("S_0 = "+str(s))
