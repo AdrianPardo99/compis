@@ -12,7 +12,6 @@ class Automata(object):
             ef = Estados.Estados()
             ef.setAceptacion(True)
             ef.setName("f")
-            # transicion = "( "+simbolo+","+ef.getName()+" )"
             transicion = Transiciones.Transicion(ef, simbolo)
             print("Transicion generada:", transicion)
             self._edoInit.getTransiciones().append(transicion)
@@ -30,9 +29,9 @@ class Automata(object):
     def enumAFN(self):
         c = 0
         for i in self._edosAFN:
-            print("Nombre anterior: "+i.getName())
+            #print("Nombre anterior: "+i.getName())
             i.setName(str(c))
-            print("Nombre nuevo: "+i.getName())
+            #print("Nombre nuevo: "+i.getName())
             c += 1
         return self._edosAFN
 
@@ -92,7 +91,7 @@ class Automata(object):
             i.setAceptacion(False)
         aut._edoInit.getTransiciones().clear()
         aut._edosAFN.remove(aut._edoInit)
-        self._alfabeto.union(aut._alfabeto)
+        self._alfabeto.update(aut._alfabeto)
         self._edosAFN.extend(aut._edosAFN)
         self._edosAceptacion.clear()
         self._edosAceptacion.extend(aut._edosAceptacion)
@@ -134,7 +133,7 @@ class Automata(object):
         self._edoInit = e1
         del e1, e2
         return self
-    
+
     def cerraduraKl(self):
         epsilon = "ε"
         aut=self.cerraduraPo()
