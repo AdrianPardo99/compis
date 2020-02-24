@@ -185,6 +185,7 @@ class Automata(object):
         ss=s[0]
         k=0
         c=0
+        cicloTran=list()
         while k<len(s):
             ss=s[k]
             for i in ss[0]:
@@ -199,12 +200,16 @@ class Automata(object):
                         sn.append(sAux)
                         sn.append(sim)
                         if(sn in s):
-                            s2.append(sn)
-                            continue
+                            if(sn not in s2):
+                                cicloTran.append(str(c+1)+","+sim+","+self.moverGetA(self._edosAFN[int(i)],sim).getName())
+                                s2.append(sn)
+                            break
+                        c+=1
                         s.append(sn)
             k+=1
         print("Conjunto de estados Sn="+str(s))
-        print("Conjuntos repetidos "+str(s2))
+        print("Conjuntos Transiciones repetidas "+str(cicloTran))
+
         afd._edosAFN=list()
         for i in range(len(s)):
             estado=Estados.Estados()
@@ -219,7 +224,9 @@ class Automata(object):
             procedencia.append(ss2)
             k+=1
         k=0
+        c=0
         ban=False
+        print("Procedencia "+str(procedencia))
         while k<len(s):
             c=k+1
             while c<len(s):
@@ -251,6 +258,12 @@ class Automata(object):
                 if(i.getName() in j):
                     afd._edoInit=afd._edosAFN[k]
             k+=1
+        for i in cicloTran:
+                s=i.split(",")
+                for j in afd._edosAFN:
+                    if (j.getName()==s[0] and len(afd._edosAFN)>int(s[2])):
+                        print("Verdadero en "+j.getName())
+                        j.getTransiciones().append(Transiciones.Transicion(afd._edosAFN[int(s[2])],s[1]))
         return afd
 
     def graphAutomata(self):

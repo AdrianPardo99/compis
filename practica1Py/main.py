@@ -12,9 +12,11 @@ aut.printTupla()
 aut3 = Automata("C")
 aut = aut.concatenarAFN(aut3)
 aut.printTupla()
-
 aut=aut.cerraduraPo()
-
+aut4=Automata("D")
+aut4.printTupla()
+aut.printTupla()
+aut=aut.unirAFN(aut4)
 aut.printTupla()
 afd=aut.AFNtoAFD()
 print(aut.printTupla())
