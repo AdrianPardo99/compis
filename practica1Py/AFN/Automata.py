@@ -1,5 +1,8 @@
 import Estados
 import Transiciones
+import networkx as nx
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Automata(object):
@@ -113,7 +116,7 @@ class Automata(object):
         epsilon = "ε"
         e1 = Estados.Estados()
         e2 = Estados.Estados()
-        e1.getTransiciones().append(Transiciones.Transicion(self._edoInit,epsilon))
+        e1.getTransiciones().append(Transiciones.Transicion(self._edoInit, epsilon))
         e2.setAceptacion(True)
         for i in self._edosAceptacion:
             i.getTransiciones().append(Transiciones.Transicion(e2, epsilon))
@@ -129,71 +132,104 @@ class Automata(object):
 
     def cerraduraKl(self):
         epsilon = "ε"
-        aut=self.cerraduraPo()
+        aut = self.cerraduraPo()
         for i in self._edosAceptacion:
-            aut._edoInit.getTransiciones().append(Transiciones.Transicion(i,epsilon))
+            aut._edoInit.getTransiciones().append(Transiciones.Transicion(i, epsilon))
         return aut
 
-
-
-    def moverA(self,estados,simbolo):
+    def moverA(self, estados, simbolo):
         for i in estados.getTransiciones():
-            if(i.getSimbolo()==simbolo):
+            if(i.getSimbolo() == simbolo):
                 return True
         return False
 
-    def moverGetA(self,estados,simbolo):
+    def moverGetA(self, estados, simbolo):
         for i in estados.getTransiciones():
-            if(i.getSimbolo()==simbolo):
+            if(i.getSimbolo() == simbolo):
                 return i.getEstadoSig()
         return
 
-    def cerraduraEpsilon(self,estados):
+    def cerraduraEpsilon(self, estados):
         epsilon = "ε"
-        resultado=set()
-        estadoAux=list()
+        resultado = set()
+        estadoAux = list()
         for i in self._edosAFN:
-            if(i.getName()==estados.getName()):
-                estadoAux=i.getTransiciones()
+            if(i.getName() == estados.getName()):
+                estadoAux = i.getTransiciones()
                 break
-        if(len(estadoAux)>0):
+        if(len(estadoAux) > 0):
             for i in estadoAux:
                 if(epsilon in i.stringTransicion()):
                     resultado.add(estados.getName())
-                    string=i.stringTransicion().replace("(","").replace(")","").replace(epsilon,"").replace("->","")
+                    string = i.stringTransicion().replace("(", "").replace(
+                        ")", "").replace(epsilon, "").replace("->", "")
                     resultado.add(string)
-                    if(i.getEstadoSig() not in resultado and estados.getName()!=i.getEstadoSig()):
-                        resultado2=self.cerraduraEpsilon(i.getEstadoSig())
-                        if(len(resultado2)>0):
+                    if(i.getEstadoSig() not in resultado and estados.getName() != i.getEstadoSig()):
+                        resultado2 = self.cerraduraEpsilon(i.getEstadoSig())
+                        if(len(resultado2) > 0):
                             for j in resultado2:
                                 resultado.add(j)
 
-
-        resultado=sorted(resultado)
+        resultado = sorted(resultado)
         return resultado
 
-
-
     def AFNtoAFD(self):
-        s=list()
-        s0=list()
+        s = list()
+        s0 = list()
         s0.append(self.cerraduraEpsilon(self._edoInit))
         s0.append("-")
         s.append(s0)
 
-        ss=s[0]
+        ss = s[0]
 
         print("S_0 = "+str(ss[0]))
-        k=0
+        k = 0
         for i in ss[k]:
             for sim in self._alfabeto:
-                if(self.moverA(self._edosAFN[int(i)],sim)):
-                    sn=list()
-                    sAux=self.cerraduraEpsilon(self.moverGetA(self._edosAFN[int(i)],sim))
-                    sAux.append(self.moverGetA(self._edosAFN[int(i)],sim).getName())
-                    sAux=list(dict.fromkeys(sAux))
+                if(self.moverA(self._edosAFN[int(i)], sim)):
+                    sn = list()
+                    sAux = self.cerraduraEpsilon(
+                        self.moverGetA(self._edosAFN[int(i)], sim))
+                    sAux.append(self.moverGetA(
+                        self._edosAFN[int(i)], sim).getName())
+                    sAux = list(dict.fromkeys(sAux))
                     sn.append(sAux)
                     sn.append(sim)
                     s.append(sn)
-            k+=1
+            k += 1
         print(str(s))
+
+    def graphAutomata(self):
+        options = {
+            'node_color': 'white',
+            'edgecolors': 'black',
+            'linewidths': 2,
+            'node_size': 500,
+            'width': 2
+        }
+        g = nx.DiGraph()
+        labels = dict()
+        for i in self._edosAFN:
+            g.add_node(i.getName())
+        for i in self._edosAFN:
+            for j in i.getTransiciones():
+                labels.update(
+                    {(i.getName(), j.getEstadoSig().getName()): j.getSimbolo()})
+                g.add_edge(i.getName(), j.getEstadoSig().getName())
+        pos = nx.planar_layout(g)
+        nx.draw(g, pos, with_labels=True, **options)
+        nx.draw_networkx_nodes(g, pos,
+                               nodelist=[self._edoInit.getName()],
+                               node_color='g',
+                               node_size=500,
+                               linewidths=2,
+                               edgecolors='black')
+        for i in self._edosAceptacion:
+            nx.draw_networkx_nodes(g, pos,
+                                   nodelist=[i.getName()],
+                                   node_color='r',
+                                   node_size=500,
+                                   linewidths=2,
+                                   edgecolors='black')
+        nx.draw_networkx_edge_labels(g, pos, edge_labels=labels)
+        plt.show()
