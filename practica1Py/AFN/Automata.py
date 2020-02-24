@@ -174,37 +174,84 @@ class Automata(object):
         return resultado
 
     def AFNtoAFD(self):
-          s=list()
-          s0=list()
-          s0.append(self.cerraduraEpsilon(self._edoInit))
-          s0.append("")
-          s.append(s0)
-          s2=list()
-          afd=Automata()
-          afd._alfabeto=self._alfabeto
-
-          ss=s[0]
-          k=0
-          while k<len(s):
-              ss=s[k]
-              for i in ss[0]:
-                  for sim in self._alfabeto:
-                      if(self.moverA(self._edosAFN[int(i)],sim)):
-                          sn=list()
-                          sAux=list()
-                          sAux=self.cerraduraEpsilon(self.moverGetA(self._edosAFN[int(i)],sim))
-                          sAux.append(self.moverGetA(self._edosAFN[int(i)],sim).getName())
-                          sAux.append(self._edosAFN[int(i)].getName())
-                          sAux=list(dict.fromkeys(sAux))
-                          sn.append(sAux)
-                          sn.append(sim)
-                          if(sn in s):
-                              s2.append(sn)
-                              continue
-                          s.append(sn)
-              k+=1
-          print("Conjunto de estados Sn="+str(s))
-          print("Conjuntos repetidos "+str(s2))
+        s=list()
+        s0=list()
+        s0.append(self.cerraduraEpsilon(self._edoInit))
+        s0.append("")
+        s.append(s0)
+        s2=list()
+        afd=Automata()
+        afd._alfabeto=self._alfabeto
+        ss=s[0]
+        k=0
+        c=0
+        while k<len(s):
+            ss=s[k]
+            for i in ss[0]:
+                for sim in self._alfabeto:
+                    if(self.moverA(self._edosAFN[int(i)],sim)):
+                        sn=list()
+                        sAux=list()
+                        sAux=self.cerraduraEpsilon(self.moverGetA(self._edosAFN[int(i)],sim))
+                        sAux.append(self.moverGetA(self._edosAFN[int(i)],sim).getName())
+                        sAux.append(self._edosAFN[int(i)].getName())
+                        sAux=list(dict.fromkeys(sAux))
+                        sn.append(sAux)
+                        sn.append(sim)
+                        if(sn in s):
+                            s2.append(sn)
+                            continue
+                        s.append(sn)
+            k+=1
+        print("Conjunto de estados Sn="+str(s))
+        print("Conjuntos repetidos "+str(s2))
+        afd._edosAFN=list()
+        for i in range(len(s)):
+            estado=Estados.Estados()
+            estado.setName(str(i))
+            afd._edosAFN.append(estado)
+        k=1
+        procedencia=list()
+        while k<len(s):
+            ss=s[k]
+            ss1=ss[0]
+            ss2=ss1[len(ss1)-1]
+            procedencia.append(ss2)
+            k+=1
+        k=0
+        ban=False
+        while k<len(s):
+            c=k+1
+            while c<len(s):
+                ss=s[c]
+                ss1=s[k]
+                for i in ss[0]:
+                    ban=False
+                    for j in ss1[0]:
+                        if j==i and i in procedencia[c-1]:
+                            print(str(j)+" y "+str(i)+" en "+str(c)+" con simbolo "+str(ss[1]))
+                            #estado, simbolo
+                            afd._edosAFN[k].getTransiciones().append(Transiciones.Transicion(afd._edosAFN[c],str(ss[1])))
+                c+=1
+            k+=1
+        k=0
+        while k<len(s):
+            for i in self._edosAceptacion:
+                ss=s[k]
+                for j in ss[0]:
+                    if(i.getName() in j):
+                        afd._edosAFN[k].setAceptacion(True)
+                        afd._edosAceptacion.add(afd._edosAFN[k])
+            k+=1
+        k=0
+        while k<len(s):
+            i=self._edoInit
+            ss=s[k]
+            for j in ss[0]:
+                if(i.getName() in j):
+                    afd._edoInit=afd._edosAFN[k]
+            k+=1
+        return afd
 
     def graphAutomata(self):
         options = {
