@@ -174,30 +174,37 @@ class Automata(object):
         return resultado
 
     def AFNtoAFD(self):
-        s = list()
-        s0 = list()
-        s0.append(self.cerraduraEpsilon(self._edoInit))
-        s0.append("-")
-        s.append(s0)
+          s=list()
+          s0=list()
+          s0.append(self.cerraduraEpsilon(self._edoInit))
+          s0.append("")
+          s.append(s0)
+          s2=list()
+          afd=Automata()
+          afd._alfabeto=self._alfabeto
 
-        ss = s[0]
-
-        print("S_0 = "+str(ss[0]))
-        k = 0
-        for i in ss[k]:
-            for sim in self._alfabeto:
-                if(self.moverA(self._edosAFN[int(i)], sim)):
-                    sn = list()
-                    sAux = self.cerraduraEpsilon(
-                        self.moverGetA(self._edosAFN[int(i)], sim))
-                    sAux.append(self.moverGetA(
-                        self._edosAFN[int(i)], sim).getName())
-                    sAux = list(dict.fromkeys(sAux))
-                    sn.append(sAux)
-                    sn.append(sim)
-                    s.append(sn)
-            k += 1
-        print(str(s))
+          ss=s[0]
+          k=0
+          while k<len(s):
+              ss=s[k]
+              for i in ss[0]:
+                  for sim in self._alfabeto:
+                      if(self.moverA(self._edosAFN[int(i)],sim)):
+                          sn=list()
+                          sAux=list()
+                          sAux=self.cerraduraEpsilon(self.moverGetA(self._edosAFN[int(i)],sim))
+                          sAux.append(self.moverGetA(self._edosAFN[int(i)],sim).getName())
+                          sAux.append(self._edosAFN[int(i)].getName())
+                          sAux=list(dict.fromkeys(sAux))
+                          sn.append(sAux)
+                          sn.append(sim)
+                          if(sn in s):
+                              s2.append(sn)
+                              continue
+                          s.append(sn)
+              k+=1
+          print("Conjunto de estados Sn="+str(s))
+          print("Conjuntos repetidos "+str(s2))
 
     def graphAutomata(self):
         options = {
