@@ -137,11 +137,16 @@ class Automata(object):
 
 
     def moverA(self,estados,simbolo):
-        resultante=list()
-        for _ in range(len(estados)):
-            estado=estados.pop()
-            resultante |= list(estado.getTransiciones())
-        return resultante
+        for i in estados.getTransiciones():
+            if(i.getSimbolo()==simbolo):
+                return True
+        return False
+
+    def moverGetA(self,estados,simbolo):
+        for i in estados.getTransiciones():
+            if(i.getSimbolo()==simbolo):
+                return i.getEstadoSig()
+        return
 
     def cerraduraEpsilon(self,estados):
         epsilon = "ε"
@@ -168,7 +173,27 @@ class Automata(object):
         return resultado
 
 
+
     def AFNtoAFD(self):
         s=list()
-        s.append(self.cerraduraEpsilon(self._edoInit))
-        print("S_0 = "+str(s))
+        s0=list()
+        s0.append(self.cerraduraEpsilon(self._edoInit))
+        s0.append("-")
+        s.append(s0)
+
+        ss=s[0]
+
+        print("S_0 = "+str(ss[0]))
+        k=0
+        for i in ss[k]:
+            for sim in self._alfabeto:
+                if(self.moverA(self._edosAFN[int(i)],sim)):
+                    sn=list()
+                    sAux=self.cerraduraEpsilon(self.moverGetA(self._edosAFN[int(i)],sim))
+                    sAux.append(self.moverGetA(self._edosAFN[int(i)],sim).getName())
+                    sAux=list(dict.fromkeys(sAux))
+                    sn.append(sAux)
+                    sn.append(sim)
+                    s.append(sn)
+            k+=1
+        print(str(s))
