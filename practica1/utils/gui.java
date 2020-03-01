@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
-import afn.AFN;
+import afn.AF;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JTable;
@@ -25,7 +25,7 @@ import javax.swing.JTextArea;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 16-02-2020 */
+ * Last file update: 29-02-2020 */
 
 public class gui extends components{
   private int x,y;
@@ -64,6 +64,7 @@ public class gui extends components{
     arrBtn.add(new JButton("Concatena AFN"));
     arrBtn.add(new JButton("Cerradura"));
     arrBtn.add(new JButton("Visualizar"));
+    arrBtn.add(new JButton("Convertir AFN a AFD"));
     for(String name:namesCMB){
       cmb.addItem(name);
     }
@@ -85,7 +86,10 @@ public class gui extends components{
     for(i=0;i<lbl5.length;i++){
       arrLbl.add(new JLabel(lbl5[i]));
     }
-    for(i=0;i<7;i++){
+    for(i=0;i<lbl6.length;i++){
+      arrLbl.add(new JLabel(lbl6[i]));
+    }
+    for(i=0;i<8;i++){
       arrTxt.add(new JTextField());
     }
     model=new DefaultTableModel();
@@ -152,6 +156,13 @@ public class gui extends components{
     arrTxt.get(6).setBounds(160,110,100,30);
     sc.setBounds(10,220,x-30,100);
     sc1.setBounds(10,340,x-30,100);
+
+    arrLbl.get(23).setBounds((x/2)-70,70,200,30);
+    arrLbl.get(24).setBounds(10,110,240,30);
+    arrLbl.get(25).setBounds(10,140,240,30);
+    arrLbl.get(26).setBounds(160,140,240,30);
+    arrTxt.get(7).setBounds(160,110,100,30);
+    arrBtn.get(6).setBounds((x/2)-120,180,200,30);
     settingComponents();
   }
 
@@ -160,8 +171,12 @@ public class gui extends components{
     tableAF.setEnabled(false);
     arrBtn.get(0).addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
-        for (AFN a : arrAFN) {
-          a.printAFN();
+        for (AF a : arrAFN) {
+          if(a.bisAFD()){
+            a.printAFD();
+          }else{
+            a.printAFN();
+          }
         }
         if(cmb.getSelectedIndex()==0){
           pan.removeAll();
@@ -185,7 +200,7 @@ public class gui extends components{
           for(i=4;i<8;i++){
             pan.add(arrLbl.get(i));
           }
-          arrLbl.get(8).setText(""+arrAFN.size());
+          arrLbl.get(7).setText(""+arrAFN.size());
           pan.add(arrBtn.get(2));
           pan.add(arrTxt.get(1));
           pan.add(arrTxt.get(2));
@@ -245,6 +260,20 @@ public class gui extends components{
           pan.repaint();
           pan.add(cmb);
           pan.add(arrBtn.get(0));
+          pan.add(arrLbl.get(23));
+          pan.add(arrLbl.get(24));
+          pan.add(arrLbl.get(25));
+          pan.add(arrLbl.get(26));
+          arrLbl.get(26).setText(""+arrAFN.size());
+          pan.add(arrTxt.get(7));
+          pan.add(arrBtn.get(6));
+          if(arrAFN.size()<1){
+            JOptionPane.showMessageDialog(null,"Debe existir al menos 1 AFN"
+            +"\npara trabajar esta sección","Error",JOptionPane.ERROR_MESSAGE);
+            arrBtn.get(6).setEnabled(false);
+          }else{
+            arrBtn.get(6).setEnabled(true);
+          }
           /*Modulo de afn to afd*/
         }else if(cmb.getSelectedIndex()==5){
           /*Aqui va la tablita de transiciones*/
@@ -288,7 +317,7 @@ public class gui extends components{
             "letra para crear el AFN\npara trabajar esta sección",
             "Error",JOptionPane.ERROR_MESSAGE);
         }else{
-          arrAFN.add(new AFN(arrTxt.get(0).getText().charAt(0)));
+          arrAFN.add(new AF(arrTxt.get(0).getText().charAt(0)));
           arrLbl.get(3).setText(""+arrAFN.size());
           arrTxt.get(0).setText("");
         }
@@ -442,9 +471,36 @@ public class gui extends components{
               Object ar[]={arr[0],arr[1],arr[2]};
               model.addRow(ar);
             }
+            area.setText(arrAFN.get(a).Tupla());
           }
-          area.setText(arrAFN.get(a).Tupla());
 
+
+        }
+      }
+    });
+    /* Aqui transforma AFN a AFD */
+    arrBtn.get(6).addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e){
+        if(arrTxt.get(7).getText().isEmpty()){
+          JOptionPane.showMessageDialog(null,"Debe escribir los "+
+            "indices de los AF\npara trabajar esta sección",
+            "Error",JOptionPane.ERROR_MESSAGE);
+        }else{
+          int a=Integer.parseInt(arrTxt.get(7).getText());
+          if(a>arrAFN.size()-1){
+            JOptionPane.showMessageDialog(null,"Debe escribir el "+
+            "indice\npara trabajar esta sección\n"+
+            "Este indices si es correcto sobreescribira el AFN",
+            "Error",JOptionPane.ERROR_MESSAGE);
+          }else{
+            AF aux=arrAFN.get(a).AFNtoAFD();
+            arrAFN.remove(a);
+            arrAFN.add(aux);
+            JOptionPane.showMessageDialog(null,"Se paso el AFN con indice "+a+
+              " a AFD exitosamente","Informacion",
+              JOptionPane.INFORMATION_MESSAGE);
+          }
         }
       }
     });
@@ -461,7 +517,7 @@ public class gui extends components{
       }
     });
 
-    for(i=1;i<7;i++){
+    for(i=1;i<8;i++){
       arrTxt.get(i).addKeyListener(new KeyListener(){
         @Override
         public void keyPressed(KeyEvent e){}

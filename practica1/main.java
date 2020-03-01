@@ -1,4 +1,4 @@
-import afn.AFN;
+import afn.AF;
 import regex.regex;
 import java.util.ArrayList;
 import utils.color;
@@ -9,12 +9,13 @@ import utils.gui;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 15-02-2020 */
+ * Last file update: 29-02-2020 */
 
 public class main{
   public static void main(String[] args) {
     gui frame=new gui();
     frame.initGui();
+    //arrF.get(0).execute();
   }
 }
 
@@ -68,4 +69,24 @@ public class main{
    f.printAFN();
  }
  *
+
+
+
+ Codigo de prueba para AFN to AFD
+ ArrayList<AF> arrF=new ArrayList<AF>();
+ arrF.add(new AF('a'));
+ arrF.get(0).kleene();
+ arrF.get(0).enumAFN();
+ arrF.add(new AF('b'));
+ arrF.get(1).enumAFN();
+ arrF.get(0).unirAFN(arrF.get(1));
+ arrF.get(0).enumAFN();
+ arrF.remove(1);
+ arrF.add(new AF('c'));
+ arrF.get(1).enumAFN();
+ arrF.get(0).unirAFN(arrF.get(1));
+ arrF.get(0).enumAFN();
+ arrF.remove(1);
+ arrF.get(0).AFNtoAFD();
+ arrF.get(0).printAFN();
 */

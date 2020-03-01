@@ -7,7 +7,7 @@ import javax.swing.JTextField;
 import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import afn.AFN;
+import afn.AF;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
@@ -18,14 +18,14 @@ import javax.swing.JTextArea;
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 16-02-2020 */
+ * Last file update: 29-02-2020 */
 
 public class components{
   protected JFrame jrApp;
   protected ArrayList<JButton> arrBtn;
   protected ArrayList<JLabel> arrLbl;
   protected ArrayList<JTextField> arrTxt;
-  protected ArrayList<AFN> arrAFN;
+  protected ArrayList<AF> arrAFN;
   protected JComboBox cmb,cmbCerradura;
   protected JPanel pan;
   protected JTextArea area;
@@ -44,6 +44,7 @@ public class components{
     cmbCerr[]={"Positiva","Kleene","Interrogativa"},
     lbl4[]={"Cerraduras","Ingresa el indice del AFN","Cerradura","AFN Disponibles",""},
     lbl5[]={"Muestra datos del AF","Indice del AF","AF Disponibles",""},
+    lbl6[]={"Pasar AFN-AFD","Indice del AF","AF Disponibles",""},
     tableColumn[]={"Inicial","Simbolo","A"};
 
 }

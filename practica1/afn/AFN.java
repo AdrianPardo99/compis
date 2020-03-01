@@ -3,20 +3,23 @@ package afn;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.Stack;
 
 /* Developed by:
  * Valdez Esquivel Melani Betsabee
  * Gonzalez Pardo Adrian
  * Jurado Macias Samuel Alejandro
  * 3CM6 20-02
- * Last file update: 16-02-2020 */
+ * Last file update: 29-02-2020 */
 
 public class AFN{
   /* Clase AFN (Automata Finito No Determinista) */
-  private Estado edoInit;
-  private Set<Estado> edosAceptacion,edosAFN;
-  private Set<Character> alfabeto;
-  private static Character epsilon='ε';
+  protected Estado edoInit;
+  protected boolean isAFD;
+  protected Set<Estado> edosAceptacion,edosAFN;
+  protected Set<Character> alfabeto;
+
+  protected static Character epsilon='ε';
 
   /* Constructor sin parametros */
   public AFN(){
@@ -106,14 +109,25 @@ public class AFN{
     printTransiciones();
   }
 
+  /* Funcion que imprime los datos del AFN */
+  public void printAFD(){
+    printLang();
+    printEdosAFN();
+    printInit();
+    printEdosAceptacion();
+    printTransiciones();
+  }
+
   /* Funcion con parametro que crea automata basico */
   public AFN afnBasico(Character s){
+    this.isAFD=false;
     return new AFN(s);
   }
 
   /* Funcion que une dos AFN con la logica de la regex
    * (regular expresion) f1 | f2 */
   public AFN unirAFN(AFN f2){
+    this.isAFD=false;
     Estado e1=new Estado(),e2=new Estado();
     e1.getTransiciones().add(new Transicion(this.edoInit,epsilon));
     e1.getTransiciones().add(new Transicion(f2.edoInit,epsilon));
@@ -141,6 +155,7 @@ public class AFN{
   /* Funcion que concatena dos AFN con la logica de la regex
    * (regular expresion) f1·f2 */
   public AFN concatenarAFN(AFN f2){
+    this.isAFD=false;
     for (Estado e : this.edosAceptacion){
       e.getTransiciones().addAll(f2.edoInit.getTransiciones());
       e.setAceptacion(false);
@@ -156,6 +171,7 @@ public class AFN{
   }
 
   public AFN cerraduraOpcional(){
+    this.isAFD=false;
     Estado e1=new Estado(),
       e2=new Estado();
     e1.getTransiciones().add(new Transicion(this.edoInit,epsilon));
@@ -175,6 +191,7 @@ public class AFN{
 
   /* Funcion que genera la cerradura positiva de un AFN {f}^(+) */
   public AFN plus(){
+    this.isAFD=false;
     Estado e1=new Estado(),
       e2=new Estado();
     e1.getTransiciones().add(new Transicion(epsilon,this.edoInit));
@@ -194,6 +211,7 @@ public class AFN{
 
   /* Funcion que genera la cerradura de Kleene de un AFN {f}^(*) */
   public AFN kleene(){
+    this.isAFD=false;
     AFN f1=this.plus();
     for(Estado e:this.edosAceptacion){
       f1.edoInit.getTransiciones().add(new Transicion(e,epsilon));
