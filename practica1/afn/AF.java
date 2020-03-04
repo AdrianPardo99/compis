@@ -132,6 +132,7 @@ public class AF extends AFN{
                       }
                       if(str.substring(k,l).charAt(0)==sim){
                         sub=str.substring(l+1,str.length())+","+sim+","+coun2;
+                        //str.substring(l+1,str.length())+","+sim+","+coun2
                       }
                       coun2++;
                     }
@@ -207,5 +208,28 @@ public class AF extends AFN{
 
     public boolean bisAFD(){
       return this.isAFD;
+    }
+
+    /* Funcion que devuelve la tupla del AF */
+    public String Tupla(){
+      String tup="Σ(";
+      for (Character a : alfabeto) {
+        tup+=" "+a.toString()+" ";
+      }
+      tup+=")\nS{";
+      for(Estado edo:edosAFN){
+        tup+=" "+edo.getId()+" ";
+      }
+      tup+="}\nI={ "+edoInit.getId()+" }\nF{";
+      for(Estado edo:edosAceptacion){
+        tup+=" "+edo.getId();
+        if(this.bisAFD()){
+          tup+="->"+edo.getToken()+" ";
+        }else{
+          tup+=" ";
+        }
+      }
+      tup+="}";
+      return tup;
     }
 }

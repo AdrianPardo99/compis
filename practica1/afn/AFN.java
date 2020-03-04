@@ -232,22 +232,4 @@ public class AFN{
     }
     return f.toArray();
   }
-
-  /* Funcion que devuelve la tupla del AF */
-  public String Tupla(){
-    String tup="Σ(";
-    for (Character a : alfabeto) {
-      tup+=" "+a.toString()+" ";
-    }
-    tup+=")\nS{";
-    for(Estado edo:edosAFN){
-      tup+=" "+edo.getId()+" ";
-    }
-    tup+="}\nI={ "+edoInit.getId()+" }\nF{";
-    for(Estado edo:edosAceptacion){
-      tup+=" "+edo.getId()+" ";
-    }
-    tup+="}";
-    return tup;
-  }
 }
